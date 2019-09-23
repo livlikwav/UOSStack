@@ -66,15 +66,15 @@ public :
 	}
 	void optimize() {    //각 가중치를 학습시킵니다.
 		for (int i = 0; i < 4; i++) {
-			this->WEIGHT[0] = this->WEIGHT[0] + 1*(this->GOAL[i] - this->OUTPUT[i])*INPUT[i][0];
-			this->WEIGHT[1] = this->WEIGHT[1] + 1*(this->GOAL[i] - this->OUTPUT[i])*INPUT[i][1];
+			this->WEIGHT[0] = this->WEIGHT[0] + 2*(this->GOAL[i] - this->OUTPUT[i])*INPUT[i][0];
+			this->WEIGHT[1] = this->WEIGHT[1] + 2*(this->GOAL[i] - this->OUTPUT[i])*INPUT[i][1];
 		}
 		cout << "w0 = " << this->WEIGHT[0] << "\n";
 		cout << "w1 = " << this->WEIGHT[1] << "\n";
 		cout << "theta = " << this->theta << "\n";
 	}
 	void signal() {//정해진 변수값대로 출력을 수행합니다.
-		int signal;
+		double signal;
 
 		for (int i = 0; i < 4; i++) {
 			signal = 0;
@@ -131,11 +131,11 @@ int main()
 
 	cout << "인공지능 과제 2 : n차원퍼셉트론 학습 \n";
 
-	perceptron perc(0);
+	perceptron perc(2);
 
 
 	perc.init();
-	for (;;) {
+	for (int i = 0; i < 30; i++) {
 		perc.signal();
 		perc.check();
 		perc.write_file();
