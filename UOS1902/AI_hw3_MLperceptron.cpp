@@ -43,19 +43,23 @@ public:
 		// randomize weight vector and bias
 		for (int i = 0; i < input_size; i++) {
 			weight.push_back(makeRandomNum(-1, 1));    //weight scope is -1~ +1 real number 
-			//cout << "weight " << i << " = " << weight[i] << endl; //DEBUG
 		}
 		bias = makeRandomNum(-1, 1);
-		//cout << "bias = " << bias << endl << endl; //DEBUG
 
 		cout << "Node " << node_id << ": "; //DEBUG
 		cout << "input size " << this->input_size << endl; //DEBUG
+	}
+	int getNodeID() {
+		return this->node_id;
 	}
 	double getNet() {
 		return this->net;
 	}
 	double getDelta() {
 		return this->delta;
+	}
+	double getBias() {
+		return this->bias;
 	}
 	vector<double> getWeight() {
 		return this->weight;
@@ -64,8 +68,6 @@ public:
 		this->delta = delta;
 	}
 	double forward(vector<double> input) {
-		//cout << "node:#" << node_id << " ,weight:"; //DEBUG
-		//printSingleVector(weight); //DEBUG
 		//save for backpropagation
 		this->input = input;
 		this->net = dotProduct(weight, input) + this->bias;
@@ -95,11 +97,9 @@ public:
 		for (int i = 0; i < weight.size(); i++) {
 			this->weight[i] -= this->delta * sigmoid_derivative(this->net) * this->input[i];
 		}
-		//cout << "node:#" << node_id << " ,weight:"; //DEBUG
-		//printSingleVector(weight); //DEBUG
 	}
 	void update_bias() {
-		this->bias = this->delta * sigmoid_derivative(this->net) * 1;
+		this->bias -= this->delta * sigmoid_derivative(this->net) * 1;
 	}
 };
 
@@ -131,7 +131,14 @@ public:
 			layer.push_back(node_address);
 		}
 	}
+	vector<Node *> getLayer() {
+		return layer;
+	}
+	vector<double> getInput() {
+		return input;
+	}
 	vector<double> forward(vector<double> input) {
+		this->input = input;
 		vector<double> output;
 
 		for (int i = 0; i < node_N; i++) {
@@ -177,8 +184,12 @@ private:
 	double toleration;
 	int epoch = 0;
 
+	// DEBUG, for print
 	vector<vector<double>> output_container;
+	vector<double> MSE_container;
 public:
+	vector<double> layer_container;
+
 	Network(enum inputs mode, double learning_rate, double toleration, vector<int> layers) {
 		//initialize
 		this->input = getInput(mode);
@@ -229,7 +240,6 @@ public:
 			network[j]->update_nodes();
 		}
 	}
-
 	double doEpoch() {
 		vector<double> network_output;
 		double ith_error_derivative;
@@ -237,12 +247,13 @@ public:
 		//do epoch each input (4 times)
 		for (int i = 0; i < input_N; i++) {   
 			network_output.push_back(this->forward(input[i]));
-			//cout << "finish doEpoch forward: #" << i << " input" << endl;//DEBUG
 			ith_error_derivative = -(target[i] - network_output[i]);    // dError/dout = -(target - output)
 			this->backward(ith_error_derivative);
-			//cout << "finish doEpoch backward: #" << i << " input" << endl <<endl;//DEBUG
 		}
+		//FOR PRINT
+		save_containers();
 
+		// return loss function
 		output_container.push_back(network_output); //DEBUG
 		return loss_MSE(target, network_output);
 	}
@@ -252,7 +263,12 @@ public:
 		int epoch_count = 0;
 
 		for (;;) {
+			if (epoch_count % 100 == 0) {
+				cout << "Epoch#: #" << epoch_count << endl; //DEBUG
+			}
+
 			MSE = doEpoch();
+			MSE_container.push_back(MSE);
 			epoch_count++;
 
 			if (MSE < toleration) {
@@ -266,6 +282,55 @@ public:
 		cout << "this network's output vector: ";//DEBUG
 		printDoubleVector(output_container);//DEBUG
 		cout << "Epoch# in training: #" << epoch_count << endl; //DEBUG
+
+		//FOR PRINT
+		fprint_MSE();
+		fprint_network();
+	}
+	void fprint_MSE() {
+		fstream fs;
+		fs.open("error.csv", ios::out);
+
+		for (int i = 0; i < MSE_container.size(); i++) {
+			fs << MSE_container[i] << endl;
+		}
+
+		fs.close();
+	}
+	void fprint_network() {
+		fstream fs;
+		int colSize = (int)layer_container.size();
+		//grad, bias, grad, bias
+		fs.open("weights.csv", ios::out);
+		fs << "w0, w1, bias0, w2, w3, bias1" << endl;
+
+		for (int i = 0; i < (colSize / 6); i++) {
+			fs << layer_container[i * 6] << ",";
+			fs << layer_container[i * 6 + 1] << ",";
+			fs << layer_container[i * 6 + 2] << ",";
+			fs << layer_container[i * 6 + 3] << ",";
+			fs << layer_container[i * 6 + 4] << ",";
+			fs << layer_container[i * 6 + 5] << ",";
+			fs << endl;
+		}
+		fs.close();
+	}
+	void save_containers() {
+		double w0, w1, w2, w3, node0_bias, node1_bias;
+
+		//save layer
+		w0 = network[0]->getLayer()[0]->getWeight()[0];
+		w1 = network[0]->getLayer()[0]->getWeight()[1];
+		w2 = network[0]->getLayer()[1]->getWeight()[0];
+		w3 = network[0]->getLayer()[1]->getWeight()[1];
+		node0_bias = network[0]->getLayer()[0]->getBias();
+		node1_bias = network[0]->getLayer()[1]->getBias();
+		layer_container.push_back(w0);
+		layer_container.push_back(w1);
+		layer_container.push_back(node0_bias);
+		layer_container.push_back(w2);
+		layer_container.push_back(w3);
+		layer_container.push_back(node1_bias);
 	}
 };
 
@@ -389,15 +454,15 @@ void printDoubleVector(vector<vector<double>> vec) {
 
 int main()
 {
+	double learning_rate = 7;
+	double toleration = 0.05;
+	vector<int> nodeNumberByLayer = {2, 1};
 
-	double learning_rate = 3;
-	double toleration = 0.01;
-	vector<int> nodeNumberByLayer = {6, 6, 1};
-
-	Network network = Network(AND, learning_rate, toleration, nodeNumberByLayer);
+	Network network = Network(XOR, learning_rate, toleration, nodeNumberByLayer);
 
 	//TEST
 	network.train();
 
 
 }
+		
