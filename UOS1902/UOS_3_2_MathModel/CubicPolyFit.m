@@ -1,11 +1,11 @@
 function [a, Er] = CubicPolyFit(x, y)
+% University of Seoul, Gyeongmin Ha : Homework for ch6
 % CubicPolyFit 함수는 3차 다항식을 Regression하는 함수입니다.
 % Input Variables:
 % x, y    vectors with the coordinates of the data points
 % Output Variables:
 % a    four-element vector with the values of the coeffiients a0,a1,a2,a3
 % Er    value of the overall error by Eq 6.21
-% University of Seoul, GyeongminHa
 
 n = length(x); % n is the number of data points
 m = 3; % m is the order of the polynomials

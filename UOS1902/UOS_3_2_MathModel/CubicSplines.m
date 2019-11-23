@@ -1,4 +1,5 @@
 function Yint = CubicSplines(x, y, xint)
+% University of Seoul, Gyeongmin Ha : Homework for ch6
 % CubicSplines for interpolation with natural cubic splines
 % Example 6-8을 그대로 일반화하여 다른 x, y, xint에도
 % 적용가능 하도록 수정하였습니다.
@@ -7,7 +8,6 @@ function Yint = CubicSplines(x, y, xint)
 % xint    x coordinate of the interpolated point
 % Output variables:
 % yint    y value of the interpolated point
-% University of Seoul, Gyeongmin Ha
 
 n = length(x);
 for i=1:n-1

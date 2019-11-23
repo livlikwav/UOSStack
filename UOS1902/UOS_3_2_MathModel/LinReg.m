@@ -1,15 +1,13 @@
 function [a, Er] = LinReg(x, y)
+%University Of Seoul, Gyeongmin Ha : Homework for ch6
 %LinReg는 problem 6.1 LinearRegression을 수정한 함수입니다
 % equation y = a1*x + a0 that best fits n data points
 % Input variables:
 % x    A vector with the coordinates x of the data points.
 % y    A vector with the coordinates y of the data points.
 % Output variables:
-% a1    The coefficient a1
-% a0    The coefficient a0
 % a    two element vector with the values of the constants a1 and a0
 % Er    the value of the overall error
-%University Of Seoul, Gyeongmin Ha
 
 nx = length(x);
 ny = length(y);
