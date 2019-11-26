@@ -1,4 +1,6 @@
 %University of Seoul, Gyeongmin Ha : homework for ch9
+%함수의 TODO 부분에 코드를 입력하고, 결과적으로
+%Figure 1, 2가 거의 동일하게 출력되는 것을 확인하였습니다.
 clear all;
 close all;
 
@@ -102,8 +104,7 @@ function [I] = composite_midpoint(f, a, b, Ns)
 		w(N+1) = 0;
 		x = linspace(a, b, N+1);	% x = [x_1, x_2, x_3, ..., x_{N+1} ]
 			% x1 = a, x2 = a+h, x3 = a+2h, ...
-		I(i) = w*f((x+x+h)/2)';	% dot product of w and f(x) = sum_{i=1}^{N+1} w(i)f(x_i)
-			% f(x) = [f(x_1), f(x_2), ..., f(x_{N+1})]
+		I(i) = w*f((x+x+h)/2)';	% dot product of w and f((x+x+h)/2) (Midpoint)
 	end
 end
 
@@ -116,8 +117,7 @@ function [I] = composite_trapezoidal(f, a, b, Ns)
 		w(N+1) = 0;
 		x = linspace(a, b, N+1);	% x = [x_1, x_2, x_3, ..., x_{N+1} ]
 			% x1 = a, x2 = a+h, x3 = a+2h, ...
-		I(i) = (1/2)*w*(f(x)+f(x+h))';	% dot product of w and f(x) = sum_{i=1}^{N+1} w(i)f(x_i)
-			% f(x) = [f(x_1), f(x_2), ..., f(x_{N+1})]
+		I(i) = (1/2)*w*(f(x)+f(x+h))';	% dot product of w and (f(x)+f(x+h)) (Trapezoidal)
 	end
 end
 
