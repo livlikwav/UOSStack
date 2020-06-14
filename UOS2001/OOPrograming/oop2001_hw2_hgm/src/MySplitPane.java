@@ -1,9 +1,10 @@
+import java.awt.Font;
+
+import javax.swing.BorderFactory;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTree;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 
 public class MySplitPane extends JSplitPane{
 	public JTree tree;
@@ -13,20 +14,12 @@ public class MySplitPane extends JSplitPane{
 		super(VERTICAL_SPLIT);
 		
 		tree = new JTree(treemodel);
-//		tree.addTreeSelectionListener(new TreeSelectionListener() {
-//			public void valueChanged(TreeSelectionEvent e) {
-//				Object o = e.getPath().getLastPathComponent();
-//				if(o instanceof Class) {
-//					//TODO
-//				}else if(o instanceof Method) {
-//					//TODO
-//				}else if(o instanceof Field) {
-//					//TODO
-//				}
-//			}
-//		});
+		tree.setFont(new Font("Verdana", Font.PLAIN, 20));
 		
 		display = new JTextArea(5, 20);
+		display.setFont(new Font("Verdana", Font.PLAIN, 20));
+		display.setBorder(BorderFactory.createTitledBorder("Use"));
+		
 		add(new JScrollPane(tree));
 		add(new JScrollPane(display));
 	}

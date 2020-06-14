@@ -30,13 +30,13 @@ public class MyTableModel implements TableModel{
 		columnName[0] = "Name";
 		columnName[1] = "Methods";
 		
-//		int membernum = cl.size();
-//		data = new Object[membernum][columnnum];
-		
-//		for (int i = 0; i < membernum; i++) {
-//			data[i][0] = cl.getMember(i).getName();
-//			data[i][1] = cl.getMember(i).getType();
-//		}
+		int rownum = 1;
+		data = new Object[rownum][columnnum];
+
+		for (int i = 0; i < rownum; i++) {
+			data[i][0] = field.getName();
+			data[i][1] = field.getMethods();
+		}
 	}
 
 	@Override
@@ -56,6 +56,7 @@ public class MyTableModel implements TableModel{
 
 	@Override
 	public java.lang.Class<?> getColumnClass(int columnIndex) {
+		Object value = getValueAt(0, columnIndex);
 		return getValueAt(0, columnIndex).getClass();
 	}
 
@@ -76,12 +77,10 @@ public class MyTableModel implements TableModel{
 
 	@Override
 	public void addTableModelListener(TableModelListener l) {
-		// TODO Auto-generated method stub
 	}
 
 	@Override
 	public void removeTableModelListener(TableModelListener l) {
-		// TODO Auto-generated method stub
 	}
 
 }

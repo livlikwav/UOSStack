@@ -1,6 +1,5 @@
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 
 public class Class{
 	private String name;
@@ -42,6 +41,9 @@ public class Class{
 	}
 	
 	public void setMember(Method method) {
+		if(method.getType() == null) { //for constructor
+			method.set("type", "no");
+		}
 		members.add(method);
 	}
 	
@@ -85,12 +87,8 @@ public class Class{
 		for (int i = 0; i < members.size(); i++) {
 			Member mem = members.get(i);
 			if(mem instanceof Method) {
-				//DEBUG
-				//System.out.println("Method : " + mem.toString());
-				
 				((Method)mem).parsingBody(this);
 			}
 		}
-		
 	}
 }

@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
@@ -107,6 +108,16 @@ public class Method extends Member{
 			sb.append(", ");
 		}
 		sb.append(")");
+		return sb.toString();
+	}
+	
+	public String getFields() {
+		StringBuilder sb = new StringBuilder();
+		Iterator<String> iter = fields.iterator();
+		while(iter.hasNext()){
+			sb.append(iter.next());
+			sb.append("\n");
+		}
 		return sb.toString();
 	}
 }

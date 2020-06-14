@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.StringTokenizer;
 
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 
@@ -20,6 +21,7 @@ public class MyParserController {//Controller
 		this.model = model;
 		
 		view.menubar.open.addActionListener(new MyButtonListener(this, view));
+		view.menubar.exit.addActionListener(new MyButtonListener(this, view));
 	}
 	
 	public void parsingJava(FileInputStream file) {
@@ -109,18 +111,32 @@ class MyButtonListener implements ActionListener{
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		FileInputStream file;
-		
-		JFileChooser chooser = new JFileChooser();
-		int r = chooser.showOpenDialog(view);
-		if(r == JFileChooser.APPROVE_OPTION) {
-			String name = chooser.getSelectedFile().getAbsolutePath();
-			try {
-				file = new FileInputStream(name);
-				controller.parsingJava(file);
-			} catch (FileNotFoundException e1) {//how to catch?
-				e1.printStackTrace();
+		String cmd = e.getActionCommand();
+		switch(cmd) {
+		case "Open":
+			FileInputStream file;
+			
+			JFileChooser chooser = new JFileChooser();
+			int r = chooser.showOpenDialog(view);
+			if(r == JFileChooser.APPROVE_OPTION) {
+				String name = chooser.getSelectedFile().getAbsolutePath();
+				try {
+					file = new FileInputStream(name);
+					controller.parsingJava(file);
+				} catch (FileNotFoundException e1) {
+					e1.printStackTrace();
+				}
 			}
+			break;
+		case "Exit":
+			int dialogButton = JOptionPane.showConfirmDialog(null, "종료하시겠습니까?", "프로그램 종료", JOptionPane.YES_NO_OPTION);
+			
+			if(dialogButton == JOptionPane.YES_OPTION) {
+				System.exit(0);
+			}else if((dialogButton == JOptionPane.NO_OPTION)||(dialogButton == JOptionPane.CLOSED_OPTION)) {
+				return;
+			}
+			break;
 		}
 	}
 }
@@ -135,20 +151,15 @@ class MyTreeSelectionListener implements TreeSelectionListener{
 	@Override
 	public void valueChanged(TreeSelectionEvent e) {
 		Object o = e.getPath().getLastPathComponent();
-		if(o instanceof Class) {
-			//DEBUG
-			System.out.println("class");
-			
-			
-		}else if(o instanceof Method) {
-			//DEBUG
-			System.out.println("method");
-			
-			view.splitpane.display.setText(((Method)o).getBody());
-		}else if(o instanceof Field) {
-			//DEBUG
-			System.out.println("field");
+		
+		view.mycard.layout.show(view.mycard, o.toString());
+		
+		if(o instanceof Method) {
+			view.splitpane.display.setText(((Method) o).getFields());
+		}else {
+			view.splitpane.display.setText("");
 		}
+		
 	}
 	
 }

@@ -1,6 +1,5 @@
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.StringTokenizer;
+import java.util.Iterator;
 
 public class Field extends Member {
 	HashSet<Method> methods = new HashSet<Method>();
@@ -37,6 +36,18 @@ public class Field extends Member {
 	
 	public void setMethods(Method method) {
 		methods.add(method);
+	}
+	
+	public String getMethods() {
+		StringBuilder sb = new StringBuilder();
+		Iterator<Method> iter = methods.iterator();
+		while(iter.hasNext()) {
+			sb.append(iter.next().getName());
+			sb.append(", ");
+		}
+		String result = sb.toString();
+		result = result.substring(0, result.length()-2);
+		return result;
 	}
 	
 	@Override
